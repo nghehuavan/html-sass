@@ -43,7 +43,7 @@ gulp.task('copy-to-dist', gulp.series(gulp.parallel('copy-images', 'copy-js')));
 // compile sass into css
 gulp.task('compile-sass', function () {
   return gulp
-    .src('./sass/**/*.scss')
+    .src('./sass/*.scss')
     .pipe(sass({ outputStyle: 'compressed' }))
     .pipe(gulp.dest(paths.dist + 'css'))
     .pipe(browserSync.stream());
