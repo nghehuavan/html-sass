@@ -13,57 +13,33 @@
       <div class="header">
         画像認証
       </div>
-      <div class="upload-preview d-none" href="#" id="upload-preview">
-        <img src="images/image1.png" alt="" id="image" height="317">
-      </div>
+
       <a class="upload-box" href="#" id="upload-box">
         <div><img src="images/upload.png" alt=""></div>
         <div>顔画像をアップロード</div>
       </a>
-      <form action="/facecheck" method="post" id="upload-form" class="d-none">
-        <input accept="image/*" type="file" id="file-upload" />
-        <button type="submit" id="submit"></button>
-      </form>
-      <div class="face-result error">顔を検出できませんでした</div>
+
+      <div class="upload-preview d-none" href="#" id="upload-preview">
+        <img src="images/sample.png" alt="" id="image" height="317">
+      </div>
+
+      <div class="d-none"> <input accept="image/*" type="file" id="file-upload" /></div>
+
+      <div class="face-result error" id="face-result">&nbsp;</div>
+
       <div class="btn-container">
         <a href="javascript:reset()" class="btn-primary">リセット</a>
         <a href="/" class="btn-outline">ホームへ戻る</a>
       </div>
-
     </div>
   </div>
 
   <script type="text/javascript">
-    const form = document.getElementById("upload-form");
-    const submit = document.getElementById("submit");
-    const uploadPreview = document.getElementById("upload-preview");
-    const uploadBox = document.getElementById("upload-box");
-    const fileUpload = document.getElementById("file-upload");
-    const image = document.getElementById("image");
-
-    form.addEventListener('submit', handleSubmit);
-    function handleSubmit(event) {
-      event && event.preventDefault();
-      const form = event.currentTarget;
-      const url = new URL(form.action);
-      const formData = new FormData(form);
-      const searchParams = new URLSearchParams(formData);
-      const fetchOptions = {
-        method: form.method,
-      };
-
-      if (form.method.toLowerCase() === 'post') {
-        if (form.enctype === 'multipart/form-data') {
-          fetchOptions.body = formData;
-        } else {
-          fetchOptions.body = searchParams;
-        }
-      } else {
-        url.search = searchParams;
-      }
-
-      fetch(url, fetchOptions);
-    }
+    const uploadPreview = document.querySelector('#upload-preview');
+    const uploadBox = document.querySelector("#upload-box");
+    const fileUpload = document.querySelector("#file-upload");
+    const image = document.querySelector("#image");
+    const faceResult = document.querySelector("#face-result");
 
     fileUpload.onchange = evt => {
       const [file] = fileUpload.files
@@ -71,7 +47,31 @@
         image.src = URL.createObjectURL(file)
         uploadPreview.classList.remove("d-none")
         uploadBox.classList.add("d-none")
-        submit.click();
+        submit();
+      }
+    }
+
+    async function submit() {
+      const formData = new FormData();
+      const [file] = fileUpload.files
+      console.log(file)
+      formData.append(file.name, file);
+      try {
+        const response = await fetch('/api/facecheck', {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await response.json();
+        if (result.success) {
+          faceResult.innerHTML = result.name
+          faceResult.classList.remove("error")
+        } else {
+          faceResult.innerHTML = result.error
+          faceResult.classList.add("error")
+        }
+
+      } catch (e) {
+        console.error(e);
       }
     }
 
@@ -83,7 +83,7 @@
     function reset() {
       uploadPreview.classList.add("d-none")
       uploadBox.classList.remove("d-none")
-      form.reset();
+      fileUpload.value = "";
     }
 
   </script>
