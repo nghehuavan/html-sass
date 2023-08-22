@@ -19,7 +19,6 @@ gulp.task('serve', function () {
   gulp.watch(['./sass/**/*.scss'], gulp.series('compile-sass'));
   gulp.watch(['./images/**/*'], gulp.series('copy-images'));
   gulp.watch(['./js/**/*'], gulp.series('copy-js'));
-  gulp.watch(['./plugins/**/*'], gulp.series('copy-plugins'));
 
   // Watch for reload page
   gulp.watch(paths.dist + '**/*').on('change', browserSync.reload);
@@ -39,10 +38,7 @@ gulp.task('copy-images', function () {
 gulp.task('copy-js', function () {
   return gulp.src(['./js/**/*']).pipe(gulp.dest(paths.dist + 'js'));
 });
-gulp.task('copy-plugins', function () {
-  return gulp.src(['./plugins/**/*']).pipe(gulp.dest(paths.dist + 'plugins'));
-});
-gulp.task('copy-to-dist', gulp.series(gulp.parallel('copy-images', 'copy-js', 'copy-plugins')));
+gulp.task('copy-to-dist', gulp.series(gulp.parallel('copy-images', 'copy-js')));
 
 // compile sass into css
 gulp.task('compile-sass', function () {
