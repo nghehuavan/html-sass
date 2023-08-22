@@ -13,19 +13,20 @@
       <div class="header">
         画像認証
       </div>
-      <div class="upload-preview" href="#" id="upload-preview">
+      <div class="upload-preview d-none" href="#" id="upload-preview">
         <img src="images/image1.png" alt="" id="image" height="317">
       </div>
       <a class="upload-box" href="#" id="upload-box">
         <div><img src="images/upload.png" alt=""></div>
         <div>顔画像をアップロード</div>
       </a>
-      <form action="/facecheck" method="post" id="upload-form">
-        <input accept="image/*" type="file" class="d-none" id="file-upload" />
+      <form action="/facecheck" method="post" id="upload-form" class="d-none">
+        <input accept="image/*" type="file" id="file-upload" />
+        <button type="submit" id="submit"></button>
       </form>
       <div class="face-result error">顔を検出できませんでした</div>
       <div class="btn-container">
-        <a href="#" class="btn-primary">リセット</a>
+        <a href="javascript:reset()" class="btn-primary">リセット</a>
         <a href="/" class="btn-outline">ホームへ戻る</a>
       </div>
 
@@ -34,9 +35,15 @@
 
   <script type="text/javascript">
     const form = document.getElementById("upload-form");
+    const submit = document.getElementById("submit");
+    const uploadPreview = document.getElementById("upload-preview");
+    const uploadBox = document.getElementById("upload-box");
+    const fileUpload = document.getElementById("file-upload");
+    const image = document.getElementById("image");
+
     form.addEventListener('submit', handleSubmit);
     function handleSubmit(event) {
-      event.preventDefault();
+      event && event.preventDefault();
       const form = event.currentTarget;
       const url = new URL(form.action);
       const formData = new FormData(form);
@@ -58,22 +65,26 @@
       fetch(url, fetchOptions);
     }
 
-
-    const fileUpload = document.getElementById("file-upload");
-    const image = document.getElementById("image");
     fileUpload.onchange = evt => {
       const [file] = fileUpload.files
       if (file) {
         image.src = URL.createObjectURL(file)
+        uploadPreview.classList.remove("d-none")
+        uploadBox.classList.add("d-none")
+        submit.click();
       }
     }
 
-    const uploadBox = document.getElementById("upload-box");
     uploadBox.addEventListener('click', (e) => {
       e.preventDefault();
       fileUpload.click();
     });
 
+    function reset() {
+      uploadPreview.classList.add("d-none")
+      uploadBox.classList.remove("d-none")
+      form.reset();
+    }
 
   </script>
 </body>
