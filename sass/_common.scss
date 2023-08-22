@@ -10,7 +10,7 @@ html {
   height: 100%;
 }
 .d-none {
-  display: none;
+  display: none !important;
 }
 .container {
   display: flex;
