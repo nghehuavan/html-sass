@@ -13,10 +13,16 @@
       <div class="header">
         画像認証
       </div>
+      <div class="upload-preview" href="#" id="upload-preview">
+        <img src="images/image1.png" alt="" id="image" height="317">
+      </div>
       <a class="upload-box" href="#" id="upload-box">
         <div><img src="images/upload.png" alt=""></div>
         <div>顔画像をアップロード</div>
       </a>
+      <form action="/facecheck" method="post" id="upload-form">
+        <input accept="image/*" type="file" class="d-none" id="file-upload" />
+      </form>
       <div class="face-result error">顔を検出できませんでした</div>
       <div class="btn-container">
         <a href="#" class="btn-primary">リセット</a>
@@ -27,6 +33,47 @@
   </div>
 
   <script type="text/javascript">
+    const form = document.getElementById("upload-form");
+    form.addEventListener('submit', handleSubmit);
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const url = new URL(form.action);
+      const formData = new FormData(form);
+      const searchParams = new URLSearchParams(formData);
+      const fetchOptions = {
+        method: form.method,
+      };
+
+      if (form.method.toLowerCase() === 'post') {
+        if (form.enctype === 'multipart/form-data') {
+          fetchOptions.body = formData;
+        } else {
+          fetchOptions.body = searchParams;
+        }
+      } else {
+        url.search = searchParams;
+      }
+
+      fetch(url, fetchOptions);
+    }
+
+
+    const fileUpload = document.getElementById("file-upload");
+    const image = document.getElementById("image");
+    fileUpload.onchange = evt => {
+      const [file] = fileUpload.files
+      if (file) {
+        image.src = URL.createObjectURL(file)
+      }
+    }
+
+    const uploadBox = document.getElementById("upload-box");
+    uploadBox.addEventListener('click', (e) => {
+      e.preventDefault();
+      fileUpload.click();
+    });
+
 
   </script>
 </body>

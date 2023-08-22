@@ -19,6 +19,26 @@
   line-height: normal;
 }
 
+.upload-preview {
+  display: flex;
+  width: 475px;
+  height: 317px;
+  padding: 24px 72px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #fff;
+  text-decoration: none;
+  color: #000;
+  font-family: Inter;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
 .btn-container {
   display: flex;
   flex-direction: column;
