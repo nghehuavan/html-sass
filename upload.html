@@ -5,6 +5,7 @@
   <meta charset="utf-8" />
   <title>画像認証</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body>
@@ -23,70 +24,19 @@
         <img src="images/sample.png" alt="" id="image" height="317">
       </div>
 
-      <div class="d-none"> <input accept="image/*" type="file" id="file-upload" /></div>
+      <div class="d-none"><input accept="image/*" type="file" id="file-upload" /></div>
 
       <div class="face-result error" id="face-result">&nbsp;</div>
 
       <div class="btn-container">
-        <a href="javascript:reset()" class="btn-primary">リセット</a>
-        <a href="/" class="btn-outline">ホームへ戻る</a>
+        <a class="btn-primary" onclick="reset()">リセット</a>
+        <a href="index.html" class="btn-outline">ホームへ戻る</a>
       </div>
     </div>
   </div>
-
-  <script type="text/javascript">
-    const uploadPreview = document.querySelector('#upload-preview');
-    const uploadBox = document.querySelector("#upload-box");
-    const fileUpload = document.querySelector("#file-upload");
-    const image = document.querySelector("#image");
-    const faceResult = document.querySelector("#face-result");
-
-    fileUpload.onchange = evt => {
-      const [file] = fileUpload.files
-      if (file) {
-        image.src = URL.createObjectURL(file)
-        uploadPreview.classList.remove("d-none")
-        uploadBox.classList.add("d-none")
-        submit();
-      }
-    }
-
-    async function submit() {
-      const formData = new FormData();
-      const [file] = fileUpload.files
-      console.log(file)
-      formData.append(file.name, file);
-      try {
-        const response = await fetch('/api/facecheck', {
-          method: 'POST',
-          body: formData,
-        });
-        const result = await response.json();
-        if (result.success) {
-          faceResult.innerHTML = result.name
-          faceResult.classList.remove("error")
-        } else {
-          faceResult.innerHTML = result.error
-          faceResult.classList.add("error")
-        }
-
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    uploadBox.addEventListener('click', (e) => {
-      e.preventDefault();
-      fileUpload.click();
-    });
-
-    function reset() {
-      uploadPreview.classList.add("d-none")
-      uploadBox.classList.remove("d-none")
-      fileUpload.value = "";
-    }
-
-  </script>
+  @@include('./parts/loading.html')
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script type="text/javascript" src="js/upload.js"></script>
 </body>
 
 </html>
